@@ -1,55 +1,94 @@
 import { VFC } from "react";
 import { OgpData, useOgp } from "../pages/api/getOgp";
 import Skeleton from "react-loading-skeleton";
+import React from "react";
+
+const hoverclass = [
+  "flex",
+  "flex-col",
+  "w-3/4",
+  "bg-gray-100",
+  "hover:bg-gray-300",
+  "delay-100 ",
+  "duration-200",
+  "border",
+  "rounded-lg",
+  "border-gray-700",
+  "p-5 ",
+  "my-5",
+  "break-words",
+  "whitespace-pre-wrap",
+  "truncate",
+].join(" ");
+
+const grayclass = ["text-xs", "text-gray-500", "break-words", "mt-3", "whitespace-pre-wrap", "truncate"].join(" ");
+
+const titleclass = [
+  "align-middle",
+  "break-words",
+  "flex",
+  "text-gray-700",
+  "font-semibold",
+  // "whitespace-pre-wrap",
+  "truncate",
+].join(" ");
+
+const faviconclass = ["h-5", "mr-3"].join(" ");
 
 interface BookmarkViewProps {
-    ogp: OgpData;
+  ogp: OgpData;
 }
 
-export const Bookmark = ({ url }) => {
-    const { data } = useOgp(url);
+export const Bookmark = ({ url, caption }) => {
+  const { data } = useOgp(url);
 
-    switch (typeof data) {
-        case "undefined":
-            return <Loading />;
-        default:
-            return <BookmarkView ogp={data} />;
-    }
+  switch (typeof data) {
+    case "undefined":
+      return <Loading />;
+    default:
+      if (caption != "") {
+        data.title = caption;
+      }
+      return <BookmarkView ogp={data} />;
+  }
 };
 
 const BookmarkView: VFC<BookmarkViewProps> = ({ ogp }) => {
-    const { title, description, favicon_url, page_url, img_url } = ogp;
-    const site_url = page_url.substring(0, page_url.indexOf("/", 8));
-    const code = (
-        <div className="flex w-3/4 bg-gray-200 border rounded-lg border-gray-700 p-5 my-5">
-            <a
-                href={page_url}
-                className=" hover:bg-gray-300 delay-100 duration-200"
-            >
-                <p className="text-gray-700 font-semibold">{title}</p>
-                <p className="text-xs text-gray-500 mt-3">{description}</p>
-                <p className="text-xs text-gray-500 mt-3">{site_url}</p>
-            </a>
-        </div>
-    );
+  var { title, description, favicon_url, page_url, img_url } = ogp;
+  if (title == "") {
+    title = "無題のリンク";
+  }
 
-    return code;
+  const site_url = page_url.substring(0, page_url.indexOf("/", 8));
+
+  const code = (
+    <a href={page_url}>
+      <div className={hoverclass}>
+        <p className={titleclass}>
+          <img className={faviconclass} src={favicon_url} />
+          {title}
+        </p>
+        {description != "" ? <p className={grayclass}>{description}</p> : ""}
+        <p className={grayclass}>{site_url}</p>
+      </div>
+    </a>
+  );
+
+  return code;
 };
 
 const Loading: VFC = () => {
-    return (
-        <div className="flex w-3/4 bg-rose-200 border rounded-lg border-gray-700 p-5 ">
-            <a href="" className=" hover:bg-gray-300 delay-100 duration-200">
-                <p className="text-gray-700 font-semibold">
-                    <Skeleton className="w-full" />
-                </p>
-                <p className="text-xs text-gray-500 mt-3">
-                    <Skeleton className="w-full" />
-                </p>
-                <p className="text-xs text-gray-500 mt-3">
-                    <Skeleton className="w-full" />
-                </p>
-            </a>
-        </div>
-    );
+  return (
+    <div className={hoverclass}>
+      <p className={titleclass}>
+        <Skeleton className="w-full" />
+      </p>
+      <p className={grayclass}>
+        <Skeleton className="w-full" />
+      </p>
+      <p className={grayclass}>
+        <Skeleton className="w-full" />
+      </p>
+    </div>
+  );
 };

@@ -3,7 +3,7 @@ import { Bookmark } from "../components/bookmark";
 
 const URL_LIST = [
     "https://beta.reactjs.org/learn/state-as-a-snapshot",
-    "https://beta.reactjs.org/learn/state-as-a-snapshot",
+    "https://amzn.to/37t3kjF",
     "https://通信エラーが起きてほしいな.com",
 ];
 
